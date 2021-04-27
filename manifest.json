@@ -1,10 +1,11 @@
 {
   "domain": "redfin",
   "name": "Redfin",
-  "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_sensor/",
+  "documentation": "https://github.com/dreed47/redfin",
+  "issue_tracker": "https://github.com/dreed47/redfin/issues",
   "dependencies": [],
-  "codeowners": [],
+  "codeowners": ["@dreed47"],
   "requirements": ["redfin==0.1.1"],
   "iot_class": "cloud_polling",
-  "version": "0.1.0"
+  "version": "1.0.0"
 }

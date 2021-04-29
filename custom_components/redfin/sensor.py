@@ -27,6 +27,8 @@ ATTR_AMOUNT_FORMATTED = "amount_formatted"
 ATTR_ADDRESS = "address"
 ATTR_FULL_ADDRESS = "full_address"
 ATTR_CURRENCY = "amount_currency"
+ATTR_STREET_VIEW = "street_view"
+ATTR_REDFIN_URL = "redfin_url"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -103,36 +105,75 @@ class RedfinDataSensor(SensorEntity):
         try:
             avm_details = client.avm_details(self.params["property_id"], "")
             if avm_details["resultCode"] != 0:
-                _LOGGER.error("The API returned: %s", avm_details["errorMessage"])
+                _LOGGER.error("The API returned: %s",
+                              avm_details["errorMessage"])
         except:
             _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
             return
-
-        _LOGGER.debug("The avm_details API returned: %s for property id: %s", avm_details["errorMessage"], self.params["property_id"])
+        _LOGGER.debug("The avm_details API returned: %s for property id: %s",
+                      avm_details["errorMessage"], self.params["property_id"])
 
         try:
-            above_the_fold = client.above_the_fold(self.params["property_id"], "")
+            above_the_fold = client.above_the_fold(
+                self.params["property_id"], "")
             if above_the_fold["resultCode"] != 0:
-                _LOGGER.error("The API returned: %s", above_the_fold["errorMessage"])
+                _LOGGER.error("The API returned: %s",
+                              above_the_fold["errorMessage"])
         except:
             _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
             return
+        _LOGGER.debug("The above_the_fold API returned: %s for property id: %s",
+                      above_the_fold["errorMessage"], self.params["property_id"])
 
-        _LOGGER.debug("The above_the_fold API returned: %s for property id: %s", above_the_fold["errorMessage"], self.params["property_id"])
+        try:
+            info_panel = client.info_panel(self.params["property_id"], "")
+            if info_panel["resultCode"] != 0:
+                _LOGGER.error("The API returned: %s",
+                              info_panel["errorMessage"])
+        except:
+            _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
+            return
+        _LOGGER.debug("The info_panel API returned: %s for property id: %s",
+                      info_panel["errorMessage"], self.params["property_id"])
+
+        if 'url' in info_panel["payload"]["mainHouseInfo"]:
+            redfinUrl = 'https://www.redfin.com' + \
+                info_panel["payload"]["mainHouseInfo"]['url']
+        else:
+            redfinUrl = 'Not Set'
 
         address_line = above_the_fold["payload"]["addressSectionInfo"]["streetAddress"][
             "assembledAddress"
         ]
         city = above_the_fold["payload"]["addressSectionInfo"]["city"]
         state = above_the_fold["payload"]["addressSectionInfo"]["state"]
+
         self.address = f"{address_line} {city} {state}"
 
+        if 'streetViewUrl' in above_the_fold["payload"]["mediaBrowserInfo"]["streetView"]:
+            streetViewUrl = above_the_fold["payload"]["mediaBrowserInfo"]["streetView"]["streetViewUrl"]
+        else:
+            streetViewUrl = 'Not Set'
+
+        if 'predictedValue' in avm_details["payload"]:
+            predictedValue = avm_details["payload"]["predictedValue"]
+        else:
+            predictedValue = 'Not Set'
+
+        if 'sectionPreviewText' in avm_details["payload"]:
+            sectionPreviewText = avm_details["payload"]["sectionPreviewText"]
+        else:
+            sectionPreviewText = 'Not Set'
+
         details = {}
-        details[ATTR_AMOUNT] = avm_details["payload"]["predictedValue"]
+        details[ATTR_AMOUNT] = predictedValue
         details[ATTR_CURRENCY] = "USD"
-        details[ATTR_AMOUNT_FORMATTED] = avm_details["payload"]["sectionPreviewText"]
+        details[ATTR_AMOUNT_FORMATTED] = sectionPreviewText
         details[ATTR_ADDRESS] = address_line
         details[ATTR_FULL_ADDRESS] = self.address
+        details[ATTR_REDFIN_URL] = redfinUrl
+        details[ATTR_STREET_VIEW] = streetViewUrl
+
         self.data = details
 
         if self.data is not None:

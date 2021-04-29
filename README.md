@@ -2,7 +2,7 @@
 
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 
-![GitHub release](https://img.shields.io/badge/release-v1.0.0-blue)
+![GitHub release](https://img.shields.io/badge/release-v1.0.1-blue)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 There is currently support for the Sensor device type within Home Assistant.
@@ -42,3 +42,13 @@ sensor:
       - "12345678"
       - "34567890"
 ```
+
+The sensor provides the following attributes:
+
+- amount
+- amount_currency
+- amount_formatted
+- address
+- full_address
+- redfin_url
+- street_view

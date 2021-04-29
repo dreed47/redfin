@@ -2,7 +2,6 @@
 from datetime import timedelta
 import logging
 
-import requests
 import voluptuous as vol
 from redfin import Redfin
 
@@ -11,7 +10,7 @@ from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
-_RESOURCE = "http://www.redfin.com"
+_RESOURCE = "https://www.redfin.com"
 
 ATTRIBUTION = "Data provided by Redfin.com"
 
@@ -37,7 +36,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
-SCAN_INTERVAL = timedelta(minutes=30)
+SCAN_INTERVAL = timedelta(hours=12)
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -137,18 +136,20 @@ class RedfinDataSensor(SensorEntity):
                       info_panel["errorMessage"], self.params["property_id"])
 
         if 'url' in info_panel["payload"]["mainHouseInfo"]:
-            redfinUrl = 'https://www.redfin.com' + \
+            redfinUrl = _RESOURCE + \
                 info_panel["payload"]["mainHouseInfo"]['url']
         else:
             redfinUrl = 'Not Set'
 
-        address_line = above_the_fold["payload"]["addressSectionInfo"]["streetAddress"][
-            "assembledAddress"
-        ]
-        city = above_the_fold["payload"]["addressSectionInfo"]["city"]
-        state = above_the_fold["payload"]["addressSectionInfo"]["state"]
-
-        self.address = f"{address_line} {city} {state}"
+        if 'streetAddress' in above_the_fold["payload"]["addressSectionInfo"]:
+            address_line = above_the_fold["payload"]["addressSectionInfo"]["streetAddress"][
+                "assembledAddress"
+            ]
+            city = above_the_fold["payload"]["addressSectionInfo"]["city"]
+            state = above_the_fold["payload"]["addressSectionInfo"]["state"]
+            self.address = f"{address_line} {city} {state}"
+        else:
+            self.address = "unknown"
 
         if 'streetViewUrl' in above_the_fold["payload"]["mediaBrowserInfo"]["streetView"]:
             streetViewUrl = above_the_fold["payload"]["mediaBrowserInfo"]["streetView"]["streetViewUrl"]

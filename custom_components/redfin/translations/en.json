@@ -1,0 +1,44 @@
+{
+  "config": {
+    "abort": {
+      "single_instance_allowed": "Only a single configuration of Redfin component is allowed."
+    },
+    "error": {
+      "duplicate_property_id": "Duplicate property Id"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "name": "Name",
+          "scan_interval": "Interval between data updates (Min)"
+        },
+        "description": "Setup a new Redfin integration.",
+        "title": "Redfin"
+      },
+      "property": {
+        "data": {
+          "add_another": "Add another property?",
+          "name": "Name of the sensor.",
+          "property_id": "Property ID"
+        },
+        "description": "Add a Property ID, check the box to add another.",
+        "title": "Add a Redfin Property ID"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "duplicate_property_id": "Duplicate property Id"
+    },
+    "step": {
+      "init": {
+        "title": "Manage Properties",
+        "data": {
+          "scan_interval": "Interval between data updates (Min)",
+          "property_id": "New Property ID"
+        },
+        "description": "Remove existing properties or add a new property."
+      }
+    }
+  }
+}

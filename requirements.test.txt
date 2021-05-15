@@ -1,0 +1,11 @@
+# Strictly for tests
+# pip3 install -r requirements.test.txt
+bleak
+attrs==20.3.0
+pytest
+pytest-cov==2.10.1
+pytest-homeassistant-custom-component
+# From the manifest.json for this component
+redfin==0.1.1
+# to run tests use
+# pytest tests/<module_name>.py -v

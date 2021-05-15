@@ -4,30 +4,21 @@ import logging
 
 import voluptuous as vol
 from redfin import Redfin
+from homeassistant import config_entries, core
 
+from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION,
+                    CONF_PROPERTY_IDS, ICON, CONF_PROPERTY_ID, ATTR_AMOUNT, ATTR_AMOUNT_FORMATTED,
+                    ATTR_ADDRESS, ATTR_FULL_ADDRESS, ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL)
+#from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.core import callback
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
+from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME, CONF_SCAN_INTERVAL
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 _RESOURCE = "https://www.redfin.com"
 
-ATTRIBUTION = "Data provided by Redfin.com"
-
-CONF_PROPERTY_IDS = "property_ids"
-
-DEFAULT_NAME = "Redfin"
-NAME = "redfin"
-
-ICON = "mdi:home-variant"
-
-ATTR_AMOUNT = "amount"
-ATTR_AMOUNT_FORMATTED = "amount_formatted"
-ATTR_ADDRESS = "address"
-ATTR_FULL_ADDRESS = "full_address"
-ATTR_CURRENCY = "amount_currency"
-ATTR_STREET_VIEW = "street_view"
-ATTR_REDFIN_URL = "redfin_url"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -39,34 +30,34 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 SCAN_INTERVAL = timedelta(hours=12)
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up the Redfin sensor."""
-
-    name = config.get(CONF_NAME)
-    properties = config[CONF_PROPERTY_IDS]
-
-    sensors = []
-    for property_id in properties:
-        params = {"property_id": property_id}
-        sensors.append(RedfinDataSensor(name, params))
-    add_entities(sensors, True)
+async def async_setup_entry(
+    hass: core.HomeAssistant,
+    config_entry: config_entries.ConfigEntry,
+    async_add_entities,
+):
+    """Setup sensors from a config entry created in the integrations UI."""
+    config = hass.data[DOMAIN][config_entry.entry_id]
+    sensors = [RedfinDataSensor(config[CONF_NAME], params, config[CONF_SCAN_INTERVAL]) for params in config[CONF_PROPERTIES]]
+    async_add_entities(sensors, update_before_add=True)
 
 
 class RedfinDataSensor(SensorEntity):
     """Implementation of a Redfin sensor."""
 
-    def __init__(self, name, params):
+    def __init__(self, name, params, interval):
         """Initialize the sensor."""
         self._name = name
         self.params = params
         self.data = None
         self.address = None
+        self.property_id = params[CONF_PROPERTY_ID]
         self._state = None
+        self._interval = timedelta(minutes=interval)
 
     @property
     def unique_id(self):
         """Return the property_id."""
-        return self.params["property_id"]
+        return self.params[CONF_PROPERTY_ID]
 
     @property
     def name(self):
@@ -90,6 +81,7 @@ class RedfinDataSensor(SensorEntity):
             attributes = self.data
         attributes[ATTR_ADDRESS] = self.address
         attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
+        attributes[CONF_PROPERTY_ID] = self.params[CONF_PROPERTY_ID]
         return attributes
 
     @property
@@ -97,43 +89,53 @@ class RedfinDataSensor(SensorEntity):
         """Icon to use in the frontend, if any."""
         return ICON
 
+    async def async_added_to_hass(self):
+        """Start custom polling."""
+
+        @callback
+        def async_update(event_time=None):
+            """Update the entity."""
+            self.async_schedule_update_ha_state(True)
+
+        async_track_time_interval(self.hass, async_update, self._interval)
+
     def update(self):
         """Get the latest data and update the states."""
 
         client = Redfin()
         try:
-            avm_details = client.avm_details(self.params["property_id"], "")
+            avm_details = client.avm_details(self.params[CONF_PROPERTY_ID], "")
             if avm_details["resultCode"] != 0:
                 _LOGGER.error("The API returned: %s",
                               avm_details["errorMessage"])
         except:
             _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
             return
-        _LOGGER.debug("The avm_details API returned: %s for property id: %s",
-                      avm_details["errorMessage"], self.params["property_id"])
+        _LOGGER.debug("%s - The avm_details API returned: %s for property id: %s",
+                      self._name, avm_details["errorMessage"], self.params[CONF_PROPERTY_ID])
 
         try:
             above_the_fold = client.above_the_fold(
-                self.params["property_id"], "")
+                self.params[CONF_PROPERTY_ID], "")
             if above_the_fold["resultCode"] != 0:
                 _LOGGER.error("The API returned: %s",
                               above_the_fold["errorMessage"])
         except:
             _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
             return
-        _LOGGER.debug("The above_the_fold API returned: %s for property id: %s",
-                      above_the_fold["errorMessage"], self.params["property_id"])
+        _LOGGER.debug("%s - The above_the_fold API returned: %s for property id: %s",
+                      self._name, above_the_fold["errorMessage"], self.params[CONF_PROPERTY_ID])
 
         try:
-            info_panel = client.info_panel(self.params["property_id"], "")
+            info_panel = client.info_panel(self.params[CONF_PROPERTY_ID], "")
             if info_panel["resultCode"] != 0:
                 _LOGGER.error("The API returned: %s",
                               info_panel["errorMessage"])
         except:
             _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
             return
-        _LOGGER.debug("The info_panel API returned: %s for property id: %s",
-                      info_panel["errorMessage"], self.params["property_id"])
+        _LOGGER.debug("%s - The info_panel API returned: %s for property id: %s",
+                      self._name, info_panel["errorMessage"], self.params[CONF_PROPERTY_ID])
 
         if 'url' in info_panel["payload"]["mainHouseInfo"]:
             redfinUrl = _RESOURCE + \
@@ -174,11 +176,13 @@ class RedfinDataSensor(SensorEntity):
         details[ATTR_FULL_ADDRESS] = self.address
         details[ATTR_REDFIN_URL] = redfinUrl
         details[ATTR_STREET_VIEW] = streetViewUrl
+        details[CONF_PROPERTY_ID] = self.params[CONF_PROPERTY_ID]
 
         self.data = details
 
         if self.data is not None:
             self._state = self.data[ATTR_AMOUNT_FORMATTED]
+            self.property_id = self.params[CONF_PROPERTY_ID]
         else:
             self._state = None
             _LOGGER.error("Unable to get Redfin estimate from response")

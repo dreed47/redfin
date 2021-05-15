@@ -12,6 +12,9 @@ client = Redfin()
 address = '1712 Glen Echo Rd Unit C,Nashville, TN 37215'
 
 response = client.search(address)
+
+pp.pprint(response['errorMessage'])
+
 url = response['payload']['exactMatch']['url']
 initial_info = client.initial_info(url)
 
@@ -47,9 +50,9 @@ if 'sectionPreviewText' in avm_details["payload"]:
 else:
     amountFormatted = 'Not Set'
 
-pp.pprint(initial_info)
-pp.pprint(mls_data)
-pp.pprint(above_the_fold)
-pp.pprint(avm_details)
+# pp.pprint(initial_info)
+# pp.pprint(mls_data)
+# pp.pprint(above_the_fold)
+# pp.pprint(avm_details)
 
 print("...end of tests")

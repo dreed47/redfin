@@ -2,7 +2,7 @@
 
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 
-![GitHub release](https://img.shields.io/badge/release-v1.0.2-blue)
+![GitHub release](https://img.shields.io/badge/release-v1.1.0-blue)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 There is currently support for the Sensor device type within Home Assistant.
@@ -22,7 +22,11 @@ To manually add Redfin to your installation, create this folder structure in you
 Then drop the following files into that folder:
 
 ```yaml
+translations/en.json
 __init__.py
+config_flow.py
+const.py
+hacs.json
 sensor.py
 manifest.json
 ```
@@ -33,15 +37,7 @@ You will need the Redfin property ID for each property you’d like to track. Th
 
 For example, given this Redfin URL: https://www.redfin.com/DC/Washington/1745-Q-St-NW-20009/unit-3/home/9860590 the property ID is 9860590.
 
-To enable this sensor, add the following lines to your `configuration.yaml`.
-
-```yaml
-sensor:
-  - platform: redfin
-    property_ids:
-      - "12345678"
-      - "34567890"
-```
+To enable this sensor, add new Redfin integration component in the Home Assistant UI and follow the prompts to add your properties.
 
 The sensor provides the following attributes:
 

@@ -181,7 +181,7 @@ class RedfinDataSensor(SensorEntity):
         self.data = details
 
         if self.data is not None:
-            self._state = self.data[ATTR_AMOUNT_FORMATTED]
+            self._state = self.data[ATTR_AMOUNT]
             self.property_id = self.params[CONF_PROPERTY_ID]
         else:
             self._state = None

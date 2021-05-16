@@ -1,6 +1,6 @@
 {
   "name": "Redfin",
-  "render_readme": true,
+  "render_readme": false,
   "domains": [
     "sensor"
   ],

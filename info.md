@@ -1,4 +1,4 @@
-# Redfin
+# Redfin Integration for Home Assistant
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -9,39 +9,17 @@
 
 <img src="https://raw.githubusercontent.com/home-assistant/brands/master/custom_integrations/redfin/logo.png" width="40%">
 
-{% if prerelease %}
-
-### NB!: This is a Beta version!
-
-{% endif %}
-
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 
 There is currently support for the Sensor device type within Home Assistant.
 
-## Installation
+{% if not installed %}
 
-### HACS installation
+## Installation
 
 This Integration is part of the default HACS store, so go to the HACS page and search for _Redfin_.
 
-### Manual Installation
-
-To manually add Redfin to your installation, create this folder structure in your /config directory:
-
-`custom_components/redfin`.
-
-Then drop the following files into that folder:
-
-```yaml
-translations/en.json
-__init__.py
-config_flow.py
-const.py
-hacs.json
-sensor.py
-manifest.json
-```
+{% endif %}
 
 ## Configuration
 

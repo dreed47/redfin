@@ -9,15 +9,9 @@
 
 <img src="https://raw.githubusercontent.com/home-assistant/brands/master/custom_integrations/redfin/logo.png" width="40%">
 
-{% if prerelease %}
-
-### NB!: This is a Beta version!
-
-{% endif %}
-
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 
-There is currently support for the Sensor device type within Home Assistant.
+There currently is support for the Sensor device type within Home Assistant.
 
 ## Installation
 

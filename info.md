@@ -15,6 +15,8 @@
 
 {% endif %}
 
+v1.1.1-beta.1
+
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 
 There currently is support for the Sensor device type within Home Assistant.

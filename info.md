@@ -15,7 +15,7 @@
 
 {% endif %}
 
-### <span style="color:red">_This component requires HA Core version 2021.6.0.dev0 or greater!_</span>
+### <span style="color:red">_This component requires HA Core version 2021.6.0 or greater!_</span>
 
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 

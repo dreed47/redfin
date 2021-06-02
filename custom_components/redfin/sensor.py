@@ -6,10 +6,9 @@ import voluptuous as vol
 from redfin import Redfin
 from homeassistant import config_entries, core
 
-from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION,
+from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION, DEFAULT_SCAN_INTERVAL,
                     CONF_PROPERTY_IDS, ICON, CONF_PROPERTY_ID, ATTR_AMOUNT, ATTR_AMOUNT_FORMATTED,
                     ATTR_ADDRESS, ATTR_FULL_ADDRESS, ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL)
-#from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.core import callback
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.helpers.event import async_track_time_interval
@@ -23,6 +22,8 @@ _RESOURCE = "https://www.redfin.com"
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_PROPERTY_IDS): vol.All(cv.ensure_list, [cv.string]),
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
+                     ): vol.All(vol.Coerce(int)),
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     }
 )
@@ -37,7 +38,8 @@ async def async_setup_entry(
 ):
     """Setup sensors from a config entry created in the integrations UI."""
     config = hass.data[DOMAIN][config_entry.entry_id]
-    sensors = [RedfinDataSensor(config[CONF_NAME], params, config[CONF_SCAN_INTERVAL]) for params in config[CONF_PROPERTIES]]
+    sensors = [RedfinDataSensor(config[CONF_NAME], params, config[CONF_SCAN_INTERVAL])
+               for params in config[CONF_PROPERTIES]]
     async_add_entities(sensors, update_before_add=True)
 
 

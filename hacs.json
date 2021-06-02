@@ -4,7 +4,7 @@
   "domains": [
     "sensor"
   ],
-  "homeassistant": "2021.6.0.dev0",
+  "homeassistant": "2021.6.0",
   "iot_class": [
     "Cloud Polling"
   ]

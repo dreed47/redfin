@@ -8,7 +8,8 @@ from homeassistant import config_entries, core
 
 from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION, DEFAULT_SCAN_INTERVAL,
                     CONF_PROPERTY_IDS, ICON, CONF_PROPERTY_ID, ATTR_AMOUNT, ATTR_AMOUNT_FORMATTED,
-                    ATTR_ADDRESS, ATTR_FULL_ADDRESS, ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL)
+                    ATTR_ADDRESS, ATTR_FULL_ADDRESS, ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL,
+                    ATTR_UNIT_OF_MEASUREMENT)
 from homeassistant.core import callback
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.helpers.event import async_track_time_interval
@@ -70,8 +71,8 @@ class RedfinDataSensor(SensorEntity):
     def state(self):
         """Return the state of the sensor."""
         try:
-            return self._state
-            # return round(float(self._state), 1)
+            #return self._state
+            return round(float(self._state), 1)
         except ValueError:
             return None
 
@@ -173,6 +174,7 @@ class RedfinDataSensor(SensorEntity):
         details = {}
         details[ATTR_AMOUNT] = predictedValue
         details[ATTR_CURRENCY] = "USD"
+        details[ATTR_UNIT_OF_MEASUREMENT] = details[ATTR_CURRENCY]
         details[ATTR_AMOUNT_FORMATTED] = sectionPreviewText
         details[ATTR_ADDRESS] = address_line
         details[ATTR_FULL_ADDRESS] = self.address

@@ -10,6 +10,7 @@ ATTR_FULL_ADDRESS = "full_address"
 ATTR_CURRENCY = "amount_currency"
 ATTR_STREET_VIEW = "street_view"
 ATTR_REDFIN_URL = "redfin_url"
+ATTR_UNIT_OF_MEASUREMENT = "unit_of_measurement"
 
 CONF_PROPERTIES = "properties"
 CONF_PROPERTY_ID = "property_id"

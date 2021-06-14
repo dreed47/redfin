@@ -84,7 +84,8 @@ class RedfinConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return await self.async_step_property()
 
                 # User is done adding properties, create the config entry.
-                _LOGGER.debug("%s component added a new config entry: %s", DOMAIN, self.options)
+                _LOGGER.debug(
+                    "%s component added a new config entry: %s", DOMAIN, self.options)
                 return self.async_create_entry(title=self.options["name"], data=self.data, options=self.options)
 
         return self.async_show_form(
@@ -119,7 +120,8 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         property_map = {e.entity_id: e for e in entries}
 
         if user_input is not None:
-            updated_properties = deepcopy(self.config_entry.options[CONF_PROPERTIES])
+            updated_properties = deepcopy(
+                self.config_entry.options[CONF_PROPERTIES])
 
             # Remove any unchecked properties.
             removed_entities = [
@@ -133,7 +135,8 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 # Remove from our configured properties.
                 entry = property_map[entity_id]
                 property_id = entry.unique_id
-                updated_properties = [e for e in updated_properties if e[CONF_PROPERTY_ID] != property_id]
+                updated_properties = [
+                    e for e in updated_properties if e[CONF_PROPERTY_ID] != property_id]
 
             if user_input.get(CONF_PROPERTY_ID):
 

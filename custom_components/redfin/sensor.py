@@ -6,10 +6,9 @@ import voluptuous as vol
 from redfin import Redfin
 from homeassistant import config_entries, core
 
-from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION, DEFAULT_SCAN_INTERVAL,
-                    CONF_PROPERTY_IDS, ICON, CONF_PROPERTY_ID, ATTR_AMOUNT, ATTR_AMOUNT_FORMATTED,
-                    ATTR_ADDRESS, ATTR_FULL_ADDRESS, ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL,
-                    ATTR_UNIT_OF_MEASUREMENT)
+from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION, DEFAULT_SCAN_INTERVAL, CONF_PROPERTY_IDS,
+                    ICON, CONF_PROPERTY_ID, ATTR_AMOUNT, ATTR_AMOUNT_FORMATTED, ATTR_ADDRESS, ATTR_FULL_ADDRESS,
+                    ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL, RESOURCE_URL, ATTR_UNIT_OF_MEASUREMENT)
 from homeassistant.core import callback
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.helpers.event import async_track_time_interval
@@ -17,7 +16,6 @@ from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME, CONF_SCAN_INTERVAL
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
-_RESOURCE = "https://www.redfin.com"
 
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
@@ -71,7 +69,7 @@ class RedfinDataSensor(SensorEntity):
     def state(self):
         """Return the state of the sensor."""
         try:
-            #return self._state
+            # return self._state
             return round(float(self._state), 1)
         except ValueError:
             return None
@@ -82,9 +80,6 @@ class RedfinDataSensor(SensorEntity):
         attributes = {}
         if self.data is not None:
             attributes = self.data
-        attributes[ATTR_ADDRESS] = self.address
-        attributes[ATTR_ATTRIBUTION] = ATTRIBUTION
-        attributes[CONF_PROPERTY_ID] = self.params[CONF_PROPERTY_ID]
         return attributes
 
     @property
@@ -112,7 +107,7 @@ class RedfinDataSensor(SensorEntity):
                 _LOGGER.error("The API returned: %s",
                               avm_details["errorMessage"])
         except:
-            _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
+            _LOGGER.error("Unable to retrieve data from %s", RESOURCE_URL)
             return
         _LOGGER.debug("%s - The avm_details API returned: %s for property id: %s",
                       self._name, avm_details["errorMessage"], self.params[CONF_PROPERTY_ID])
@@ -124,7 +119,7 @@ class RedfinDataSensor(SensorEntity):
                 _LOGGER.error("The API returned: %s",
                               above_the_fold["errorMessage"])
         except:
-            _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
+            _LOGGER.error("Unable to retrieve data from %s", RESOURCE_URL)
             return
         _LOGGER.debug("%s - The above_the_fold API returned: %s for property id: %s",
                       self._name, above_the_fold["errorMessage"], self.params[CONF_PROPERTY_ID])
@@ -135,13 +130,13 @@ class RedfinDataSensor(SensorEntity):
                 _LOGGER.error("The API returned: %s",
                               info_panel["errorMessage"])
         except:
-            _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)
+            _LOGGER.error("Unable to retrieve data from %s", RESOURCE_URL)
             return
         _LOGGER.debug("%s - The info_panel API returned: %s for property id: %s",
                       self._name, info_panel["errorMessage"], self.params[CONF_PROPERTY_ID])
 
         if 'url' in info_panel["payload"]["mainHouseInfo"]:
-            redfinUrl = _RESOURCE + \
+            redfinUrl = RESOURCE_URL + \
                 info_panel["payload"]["mainHouseInfo"]['url']
         else:
             redfinUrl = 'Not Set'
@@ -181,12 +176,12 @@ class RedfinDataSensor(SensorEntity):
         details[ATTR_REDFIN_URL] = redfinUrl
         details[ATTR_STREET_VIEW] = streetViewUrl
         details[CONF_PROPERTY_ID] = self.params[CONF_PROPERTY_ID]
+        details[ATTR_ATTRIBUTION] = ATTRIBUTION
 
         self.data = details
 
         if self.data is not None:
             self._state = self.data[ATTR_AMOUNT]
-            self.property_id = self.params[CONF_PROPERTY_ID]
         else:
             self._state = None
             _LOGGER.error("Unable to get Redfin estimate from response")

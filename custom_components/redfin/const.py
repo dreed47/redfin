@@ -3,6 +3,7 @@ DOMAIN = "redfin"
 DEFAULT_NAME = "Redfin"
 
 ATTRIBUTION = "Data provided by Redfin.com"
+RESOURCE_URL = "https://www.redfin.com"
 ATTR_AMOUNT = "amount"
 ATTR_AMOUNT_FORMATTED = "amount_formatted"
 ATTR_ADDRESS = "address"

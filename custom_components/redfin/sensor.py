@@ -75,6 +75,11 @@ class RedfinDataSensor(SensorEntity):
             return None
 
     @property
+    def state_class(self):
+        # set state_class to 'measurement' so long-term statistics are generated
+        return STATE_CLASS_MEASUREMENT
+
+    @property
     def extra_state_attributes(self):
         """Return the state attributes."""
         attributes = {}

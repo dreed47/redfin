@@ -9,7 +9,7 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.helpers.entity_registry import (
     async_entries_for_config_entry,
-    async_get_registry,
+    async_get,
 )
 
 from .const import (CONF_PROPERTIES, DOMAIN, DEFAULT_SCAN_INTERVAL, DEFAULT_NAME,
@@ -111,7 +111,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         errors: Dict[str, str] = {}
         # Grab all configured propert id's from the entity registry so we can populate the
         # multi-select dropdown that will allow a user to remove a property.
-        entity_registry = await async_get_registry(self.hass)
+        entity_registry = await async_get(self.hass)
         entries = async_entries_for_config_entry(
             entity_registry, self.config_entry.entry_id
         )

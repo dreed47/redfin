@@ -8,7 +8,7 @@ from homeassistant import config_entries, core
 
 from .const import (DEFAULT_NAME, DOMAIN, CONF_PROPERTIES, ATTRIBUTION, DEFAULT_SCAN_INTERVAL, CONF_PROPERTY_IDS,
                     ICON, CONF_PROPERTY_ID, ATTR_AMOUNT, ATTR_AMOUNT_FORMATTED, ATTR_ADDRESS, ATTR_FULL_ADDRESS,
-                    ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL, RESOURCE_URL, ATTR_UNIT_OF_MEASUREMENT)
+                    ATTR_CURRENCY, ATTR_STREET_VIEW, ATTR_REDFIN_URL, RESOURCE_URL, ATTR_UNIT_OF_MEASUREMENT, STATE_CLASS_MEASUREMENT)
 from homeassistant.core import callback
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.helpers.event import async_track_time_interval

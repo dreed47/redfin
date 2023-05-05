@@ -111,7 +111,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         errors: Dict[str, str] = {}
         # Grab all configured propert id's from the entity registry so we can populate the
         # multi-select dropdown that will allow a user to remove a property.
-        entity_registry = await async_get(self.hass)
+        entity_registry = sync_get(self.hass)
         entries = async_entries_for_config_entry(
             entity_registry, self.config_entry.entry_id
         )

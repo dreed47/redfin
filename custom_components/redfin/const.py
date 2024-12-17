@@ -1,9 +1,12 @@
+"""Constants for the Redfin integration."""
+
 DOMAIN = "redfin"
 
-DEFAULT_NAME = "Redfin"
+DEFAULT_NAME = "Redfin Property Value"
 
-ATTRIBUTION = "Data provided by Redfin.com"
+ATTR_ATTRIBUTION = "Data provided by Redfin.com"
 RESOURCE_URL = "https://www.redfin.com"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.1 Safari/537.36"
 ATTR_AMOUNT = "amount"
 ATTR_AMOUNT_FORMATTED = "amount_formatted"
 ATTR_ADDRESS = "address"

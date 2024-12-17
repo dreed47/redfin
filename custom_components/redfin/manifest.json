@@ -1,12 +1,15 @@
 {
   "domain": "redfin",
   "name": "Redfin",
-  "documentation": "https://github.com/dreed47/redfin",
-  "issue_tracker": "https://github.com/dreed47/redfin/issues",
-  "dependencies": [],
   "codeowners": ["@dreed47"],
-  "requirements": ["redfin==0.1.1"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/redfin",
+  "issue_tracker": "https://github.com/dreed47/redfin/issues",
+  "homekit": {},
   "iot_class": "cloud_polling",
-  "version": "1.1.4",
-  "config_flow": true
+  "requirements": [],
+  "ssdp": [],
+  "version": "1.1.6",
+  "zeroconf": []
 }

@@ -11,6 +11,8 @@
 
 ### <span style="color: red;"><b>This integration is currently broke! I've been unable to get this to work consistently. Most likely Redfin is attempting to block external API traffic. I would recommend moving away from this integration unless/until Redfin publishes an official API. </b></span>
 
+### <span style="color:red">_This component requires HA Core version 2024.1.0 or greater!_</span>
+
 This is a _Custom Integration_ for [Home Assistant](https://www.home-assistant.io/). It uses the unofficial [Redfin](https://www.redfin.com) API to get property value estimates.
 
 There currently is support for the Sensor device type within Home Assistant.
